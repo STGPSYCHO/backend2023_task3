@@ -13,20 +13,25 @@ import (
 
 // GET /posts/:id
 // Получаем блог по id
-func GetPosts(context *gin.Context) {
+func GetPost(context *gin.Context) {
 	var blogs models.Blog
+	var comments []models.Comment
 
 	if err := models.DB.Where("id = ?", context.Param("id")).First(&blogs).Error; err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"error": "Запись не существует"})
 		return
 	}
+	if err := models.DB.Where("blog_id = ?", context.Param("id")).Find(&comments).Error; err != nil {
+	}
+	// models.DB.Joins("Comment").Joins("User").Find()
 	context.HTML(
 		http.StatusOK,
-		"user.html",
+		"post.html",
 		gin.H{
-			"ID":         blogs.ID,
-			"First_name": blogs.Text,
-			"Last_name":  blogs.User_ID,
+			"ID":       blogs.ID,
+			"Text":     blogs.Text,
+			"Title":    blogs.Title,
+			"comments": comments,
 		},
 	)
 }

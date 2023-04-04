@@ -13,7 +13,7 @@ func ConnectDB() {
 	if err != nil {
 		panic("Не удалось подключиться к базе данных")
 	}
-	db.AutoMigrate(&User{})
-	db.AutoMigrate(&Blog{})
+	db.Exec("PRAGMA foreign_keys = ON;")
+	db.AutoMigrate(&User{}, &Blog{}, &Comment{}, &Category{})
 	DB = db
 }
