@@ -1,0 +1,74 @@
+basePath: /
+definitions:
+  controllers.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: API Server for TodoList Application
+  title: Todo App API
+  version: "1.0"
+paths:
+  /api/blogs:
+    get:
+      description: get blog by id
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: GetBlog
+      tags:
+      - api
+  /register:
+    post:
+      description: get blog by id
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      summary: GetBlog
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLOGS</title>
+</head>
+<body>
+    <div class="container">
+        {{ range .Blogs}}
+        <h1>Блог #{{.ID}}</h1>
+        <div >
+                <h2 >{{.Title}}</h2>
+                <p>{{.Content}}</p>
+                <p>{{.First_name}}</p>
+                <p>{{.Category_name}}</p>
+                <a href="http://localhost:8080/api/blogs/{{.ID}}">Ссылка</a>
+        </div>
+        {{end}}
+    </div>
+</body>
+</html>

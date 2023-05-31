@@ -1,8 +1,14 @@
 package models
 
+import (
+	"gorm.io/gorm"
+)
+
 type Blog struct {
-	ID      uint      `json:"id" gorm:"primary_key"`
-	Title   string    `json:"blog_title"`
-	Text    string    `json:"blog_text"`
-	Comment []Comment `gorm:"ForeignKey:BlogID"`
+	gorm.Model
+	Title      string `json:"blog_title"`
+	UserID     uint   `json:"user_id" binding:"required"`
+	Content    string `json:"blog_content"`
+	CategoryID uint   `json:"category_id"`
+	Tags       []*Tag `gorm:"many2many:blog_tags;"`
 }
