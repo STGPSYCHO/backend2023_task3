@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/STGPSYCHO/backend2023_task3/models"
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,10 @@ type BlogsInfo struct {
 type TagsInfo struct {
 	Name string
 	ID   uint
+}
+type CategoriesInfo struct {
+	Category_name string
+	ID            uint
 }
 
 // Blogs example
@@ -62,17 +67,17 @@ func GetBlog(c *gin.Context) {
 	}
 
 	result_3 := models.DB.Raw(query_tags, c.Param("id")).Scan(&tags)
-	if result_2.RowsAffected == 0 {
+	if result_3.RowsAffected == 0 {
 		msg = "еще не создавали тегов"
-	} else if result_2.Error != nil {
+	} else if result_3.Error != nil {
 		c.JSON(http.StatusBadGateway, gin.H{"error": result_3.Error})
 		return
 	}
 
 	result_4 := models.DB.Raw(query_tagsAdd).Scan(&tagsAdd)
-	if result_2.RowsAffected == 0 {
+	if result_4.RowsAffected == 0 {
 		msg = "еще не создавали тегов"
-	} else if result_2.Error != nil {
+	} else if result_4.Error != nil {
 		c.JSON(http.StatusBadGateway, gin.H{"error": result_4.Error})
 		return
 	}
@@ -95,7 +100,11 @@ func GetBlog(c *gin.Context) {
 func GetBlogs(c *gin.Context) {
 
 	var raws []BlogsInfo
+	var categoriesAdd []CategoriesInfo
+	var msg string
+
 	query := "select b.id, b.title, b.content, u.first_name, c.category_name from blogs b join users u on u.ID = b.user_id left join categories c on b.category_id = c.ID where b.deleted_at is null"
+	query_categoriesAdd := "select category_name, id from categories"
 
 	result := models.DB.Raw(query).Scan(&raws)
 	if result.RowsAffected == 0 {
@@ -106,11 +115,21 @@ func GetBlogs(c *gin.Context) {
 		return
 	}
 
+	result_5 := models.DB.Raw(query_categoriesAdd).Scan(&categoriesAdd)
+	if result_5.RowsAffected == 0 {
+		msg = "еще не создавали категорий"
+	} else if result_5.Error != nil {
+		c.JSON(http.StatusBadGateway, gin.H{"error": result_5.Error})
+		return
+	}
+
 	c.HTML(
 		http.StatusOK,
 		"blogs.html",
 		gin.H{
-			"Blogs": raws,
+			"Blogs":         raws,
+			"CategoriesAdd": categoriesAdd,
+			"msg":           msg,
 		},
 	)
 }
@@ -123,12 +142,27 @@ func CreateBlog(c *gin.Context) {
 
 	var blog models.Blog
 	blog.UserID = userID
-
-	fmt.Print(blog.UserID)
-	if err := c.ShouldBindJSON(&blog); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	title, ok := c.GetPostForm("title")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "не передали title"})
 		return
 	}
+	blog.Title = title
+
+	content, ok := c.GetPostForm("content")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "не передали content"})
+		return
+	}
+	blog.Content = content
+
+	category, ok := c.GetPostForm("category")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "не передали categoryId"})
+		return
+	}
+	v, _ := strconv.ParseUint(category, 10, 32)
+	blog.CategoryID = uint(v)
 
 	result := models.DB.Create(&blog)
 	if result.Error != nil {
@@ -136,7 +170,7 @@ func CreateBlog(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(301, "/api/blogs")
+	c.Redirect(http.StatusMovedPermanently, "/api/blogs")
 }
 
 // POST /remove-blog/:id

@@ -12,10 +12,15 @@ import (
 func CreateCategory(c *gin.Context) {
 
 	var category models.Category
-	if err := c.ShouldBindJSON(&category); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+	category_name, ok := c.GetPostForm("category_name")
+
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "не передали Id"})
 		return
 	}
+
+	category.Category_name = category_name
 
 	result := models.DB.Create(&category)
 	if result.Error != nil {
@@ -23,7 +28,7 @@ func CreateCategory(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, category)
+	c.Redirect(http.StatusMovedPermanently, "/api/blogs")
 }
 
 // POST /remove-category/:id

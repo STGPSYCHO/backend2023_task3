@@ -8,14 +8,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>Блог #{{.Blog.ID}}</h1>
+        {{$blog := .Blog.ID}}
+        <h1>Блог #{{$blog}}</h1>
         <div >
                 <h2 >{{.Blog.Title}}</h2>
                 <p>{{.Blog.Content}}</p>
                 <p>{{.Blog.First_name}}</p>
                 <form class="form" method="post" action="/api/create-comment">
                     <textarea  value="Введите комментарий" name="comment"></textarea>
-                    <input  value="{{.Blog.ID}}" name="id" type="hidden"></input>
+                    <input  value="{{$blog}}" name="id" type="hidden"></input>
                     <button type="submit">Добавить комментарий</button>
                 </form>
 
@@ -27,7 +28,7 @@
                             {{end}}
                         </select>
                     </p>
-                    <input type="hidden" value="{{.Blog.ID}}" name="blog">
+                    <input type="hidden" value="{{$blog}}" name="blog">
                     <p><input type="submit" value="Отправить"></p>
                 </form>
 
@@ -44,11 +45,16 @@
                     {{range .Tags}}
                     <div>
                         {{.Name}}
+                        <form class="form" method="post" action="/api/remove-tag">
+                            <input  value="{{.ID}}" name="tag" type="hidden"></input>
+                            <input  value="{{$blog}}" name="id" type="hidden"></input>
+                            <button type="submit">X</button>
+                        </form>
                     </div>
                     {{end}}
                 </div>
 
-                <form class="delete" method="post" action="/api/remove-blog/{{.Blog.ID}}">
+                <form class="delete" method="post" action="/api/remove-blog/{{$blog}}">
                     <button type="submit">Удалить блог пост</button>
                 </form>
         </div>
@@ -56,44 +62,3 @@
     </div>
 </body>
 </html>
-<!-- <script>
-    
-    const form = document.querySelector('.form');
-    const comment = document.getElementById('comment');
-    const id = document.getElementById('id');
-
-    // const tag = document.querySelector('.tag');
-
-    form.addEventListener('submit',(e)=>{
-        e.preventDefault();
-        PostData();          
-    });
-    async function PostData(){
-        let comment_obj = {
-            comment_text: comment.value,
-            blog_id: parseInt(id.value)
-        }
-        
-        let response = await fetch('/api/create-comment', {
-            method: 'POST',
-            body: JSON.stringify(comment_obj)
-        })
-    }
-
-
-    // tag.addEventListener('submit',(e)=>{
-    //     e.preventDefault();
-    //     PostDataTag();          
-    // });
-    // async function PostDataTag(){
-    //     let comment_obj = {
-    //         comment_text: comment.value,
-    //         blog_id: parseInt(id.value)
-    //     }
-        
-    //     let response = await fetch('/api/create-comment', {
-    //         method: 'POST',
-    //         body: JSON.stringify(comment_obj)
-    //     })
-    // }
-</script> -->

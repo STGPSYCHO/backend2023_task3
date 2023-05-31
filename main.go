@@ -53,6 +53,8 @@ func main() {
 		api.POST("/create-comment", controllers.CreateComment)
 
 		api.POST("/tag", controllers.AssosiateTag)
+		api.POST("/create-tag", controllers.CreateTag)
+		api.POST("/remove-tag", controllers.RemoveTag)
 	}
 
 	// Авторизация, регистрация

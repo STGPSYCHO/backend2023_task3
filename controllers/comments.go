@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -15,7 +14,6 @@ func CreateComment(c *gin.Context) {
 	var comment models.Comment
 
 	userID := GetUserId(c)
-	fmt.Print(userID)
 	comment.UserID = userID
 
 	blog_id, ok := c.GetPostForm("id")

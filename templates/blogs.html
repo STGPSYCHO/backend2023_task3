@@ -8,10 +8,37 @@
 </head>
 <body>
     <div class="container">
+        <div>
+            <h3>Категория</h3>
+            <form class="form" method="post" action="/api/create-category">
+                <input  value="Введите название категории" name="category_name"></input>
+                <button type="submit">Добавить категорию</button>
+            </form>
+        </div>
+        <div>
+            <h3>Тэг</h3>
+            <form class="form" method="post" action="/api/create-tag">
+                <input  value="Введите новый тэг" name="tag_name"></input>
+                <button type="submit">Добавить категорию</button>
+            </form>
+        </div>
+        <div>
+            <h3>Блог</h3>
+            <form class="form" method="post" action="/api/create-blog">
+                <input  value="Введите название блога" name="title"></input>
+                <textarea  value="Введите контент блога" name="content"></textarea>
+                <select size="3" name="category">
+                    {{range .CategoriesAdd}}
+                        <option value={{.ID}}>{{.Category_name}}</option>
+                    {{end}}
+                </select>
+                <button type="submit">Добавить блог</button>
+            </form>
+        </div>
         {{ range .Blogs}}
         <h1>Блог #{{.ID}}</h1>
         <div >
-                <h2 >{{.Title}}</h2>
+                <h4 >{{.Title}}</h4>
                 <p>{{.Content}}</p>
                 <p>{{.First_name}}</p>
                 <p>{{.Category_name}}</p>
