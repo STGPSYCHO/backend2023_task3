@@ -27,15 +27,14 @@ type CategoriesInfo struct {
 }
 
 // Blogs example
-// @Summary GetBlog
-// @Security ApiKeyAuth
-// @Tags api
-// @Description get blog by id
-// @Success 200 {integer} integer 1
-// @Failure 400,404 {object} errorResponse
-// @Failure 500 {object} errorResponse
-// @Failure default {object} errorResponse
-// @Router /api/blogs [get]
+//	@Summary		GetBlog
+//	@Tags			api
+//	@Description	get blog by id
+//	@Success		200		{integer}	integer	1
+//	@Failure		400,404	{object}	errorResponse
+//	@Failure		500		{object}	errorResponse
+//	@Failure		default	{object}	errorResponse
+//	@Router			/api/blogs [get]
 func GetBlog(c *gin.Context) {
 
 	var comms []models.Comment

@@ -5,12 +5,12 @@ definitions:
       message:
         type: string
     type: object
-host: localhost:8000
+host: localhost:8080
 info:
   contact: {}
-  description: API Server for TodoList Application
-  title: Todo App API
-  version: "1.0"
+  description: API Server for CRUD Application
+  title: CRUD Application
+  version: "1.2"
 paths:
   /api/blogs:
     get:
@@ -36,14 +36,57 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/controllers.errorResponse'
-      security:
-      - ApiKeyAuth: []
       summary: GetBlog
       tags:
       - api
+  /login-verification:
+    post:
+      parameters:
+      - description: Account ID
+        in: path
+        name: login
+        required: true
+        type: string
+      - description: Password
+        in: path
+        name: password
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
   /register:
     post:
       description: get blog by id
+      parameters:
+      - description: Account ID
+        in: path
+        name: login
+        required: true
+        type: string
+      - description: Password
+        in: path
+        name: password
+        required: true
+        type: string
       responses:
         "200":
           description: OK
@@ -66,9 +109,4 @@ paths:
           schema:
             $ref: '#/definitions/controllers.errorResponse'
       summary: GetBlog
-securityDefinitions:
-  ApiKeyAuth:
-    in: header
-    name: Authorization
-    type: apiKey
 swagger: "2.0"

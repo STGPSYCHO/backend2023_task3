@@ -12,13 +12,16 @@ import (
 )
 
 // Register User
-// @Summary GetBlog
-// @Description get blog by id
-// @Success 200 {integer} integer 1
-// @Failure 400,404 {object} errorResponse
-// @Failure 500 {object} errorResponse
-// @Failure default {object} errorResponse
-// @Router /register [post]
+//
+//		@Summary		GetBlog
+//		@Description	get blog by id
+//	 	@Param 			login path string true "Account ID"
+//	 	@Param			password path string true "Password"
+//		@Success		200		{integer}	integer	1
+//		@Failure		400,404	{object}	errorResponse
+//		@Failure		500		{object}	errorResponse
+//		@Failure		default	{object}	errorResponse
+//		@Router			/register [post]
 func Register(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -35,17 +38,16 @@ func Register(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User registered successfully"})
 }
 
-// POST /login-verification
-// Метод Авторизации пользователя
+// Login logic
+//
+//	 	@Param 			login path string true "Account ID"
+//	 	@Param			password path string true "Password"
+//		@Success		200		{integer}	integer	1
+//		@Failure		400,404	{object}	errorResponse
+//		@Failure		500		{object}	errorResponse
+//		@Failure		default	{object}	errorResponse
+//		@Router			/login-verification [post]
 func Login(c *gin.Context) {
-	// var loginData struct {
-	// 	Username string `json:"username" binding:"required"`
-	// 	Password string `json:"password" binding:"required"`
-	// }
-	// if err := c.ShouldBindJSON(&loginData); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
 
 	var user models.User
 	username, ok := c.GetPostForm("username")
@@ -78,7 +80,7 @@ func Login(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	// сделать без JS как в лабе №2, либо через JS сделать редирект
+
 	c.Redirect(http.StatusMovedPermanently, "/api/blogs")
 }
 

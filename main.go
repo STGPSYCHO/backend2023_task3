@@ -14,22 +14,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @title Todo App API
-// @version 1.0
-// @description API Server for TodoList Application
+//	@title			CRUD Application
+//	@version		1.2
+//	@description	API Server for CRUD Application
 
-// @host localhost:8000
-// @BasePath /
-
-// @securityDefinitions.apikey ApiKeyAuth
-// @in header
-// @name Authorization
+//	@host		localhost:8080
+//	@BasePath	/
 
 func main() {
 
 	route := gin.Default()
 
 	docs.SwaggerInfo.BasePath = "/"
+
 	route.LoadHTMLGlob("templates/*")
 
 	models.ConnectDB()
