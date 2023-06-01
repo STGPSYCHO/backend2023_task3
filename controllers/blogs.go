@@ -6,27 +6,12 @@ import (
 	"strconv"
 
 	"github.com/STGPSYCHO/backend2023_task3/models"
+	"github.com/STGPSYCHO/backend2023_task3/repository"
 	"github.com/gin-gonic/gin"
 )
 
-type BlogsInfo struct {
-	ID            uint
-	Title         string
-	Content       string
-	First_name    string
-	Category_name string
-}
-
-type TagsInfo struct {
-	Name string
-	ID   uint
-}
-type CategoriesInfo struct {
-	Category_name string
-	ID            uint
-}
-
 // Blogs example
+//
 //	@Summary		GetBlog
 //	@Tags			api
 //	@Description	get blog by id
@@ -38,48 +23,15 @@ type CategoriesInfo struct {
 func GetBlog(c *gin.Context) {
 
 	var comms []models.Comment
-	var raws BlogsInfo
+	var raws repository.BlogsInfo
 	var msg string
-	var tags []TagsInfo
-	var tagsAdd []TagsInfo
+	var tags []repository.TagsInfo
+	var tagsAdd []repository.TagsInfo
 
-	query_blogs := "select b.id, b.title, b.content, u.first_name, c.category_name from blogs b join users u on u.ID = b.user_id left join categories c on b.category_id = c.ID where b.ID = ?"
-	query_comms := "select c.text, u.first_name from comments c left join users u on u.ID = c.user_id where c.blog_id = ?"
-	query_tags := "select t.name, t.id from blogs b join blog_tags bt on b.id = bt.blog_id join tags t on t.id = bt.tag_id where b.id = ?"
-	query_tagsAdd := "select name, id from tags"
-
-	result := models.DB.Raw(query_blogs, c.Param("id")).Scan(&raws)
-	if result.RowsAffected == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": result.Error})
-		return
-	} else if result.Error != nil {
-		c.JSON(http.StatusBadGateway, gin.H{"error": result.Error})
-		return
-	}
-
-	result_2 := models.DB.Raw(query_comms, c.Param("id")).Scan(&comms)
-	if result_2.RowsAffected == 0 {
-		msg = "еще не создавали комментариев"
-	} else if result_2.Error != nil {
-		c.JSON(http.StatusBadGateway, gin.H{"error": result_2.Error})
-		return
-	}
-
-	result_3 := models.DB.Raw(query_tags, c.Param("id")).Scan(&tags)
-	if result_3.RowsAffected == 0 {
-		msg = "еще не создавали тегов"
-	} else if result_3.Error != nil {
-		c.JSON(http.StatusBadGateway, gin.H{"error": result_3.Error})
-		return
-	}
-
-	result_4 := models.DB.Raw(query_tagsAdd).Scan(&tagsAdd)
-	if result_4.RowsAffected == 0 {
-		msg = "еще не создавали тегов"
-	} else if result_4.Error != nil {
-		c.JSON(http.StatusBadGateway, gin.H{"error": result_4.Error})
-		return
-	}
+	raws = repository.GetBlogsInfo(c)
+	comms, msg = repository.GetComments(c)
+	tags, msg = repository.GetTags(c)
+	tagsAdd, msg = repository.GetTagsAdd(c)
 
 	c.HTML(
 		http.StatusOK,
@@ -98,29 +50,12 @@ func GetBlog(c *gin.Context) {
 // Получаем все блоги
 func GetBlogs(c *gin.Context) {
 
-	var raws []BlogsInfo
-	var categoriesAdd []CategoriesInfo
+	var raws []repository.BlogsInfo
+	var categoriesAdd []repository.CategoriesInfo
 	var msg string
 
-	query := "select b.id, b.title, b.content, u.first_name, c.category_name from blogs b join users u on u.ID = b.user_id left join categories c on b.category_id = c.ID where b.deleted_at is null"
-	query_categoriesAdd := "select category_name, id from categories"
-
-	result := models.DB.Raw(query).Scan(&raws)
-	if result.RowsAffected == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": result.Error})
-		return
-	} else if result.Error != nil {
-		c.JSON(http.StatusBadGateway, gin.H{"error": result.Error})
-		return
-	}
-
-	result_5 := models.DB.Raw(query_categoriesAdd).Scan(&categoriesAdd)
-	if result_5.RowsAffected == 0 {
-		msg = "еще не создавали категорий"
-	} else if result_5.Error != nil {
-		c.JSON(http.StatusBadGateway, gin.H{"error": result_5.Error})
-		return
-	}
+	categoriesAdd, msg = repository.GetCategories(c)
+	raws, msg = repository.GetBlogs(c)
 
 	c.HTML(
 		http.StatusOK,
