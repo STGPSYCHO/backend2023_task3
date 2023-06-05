@@ -10,16 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Blogs example
-//
-//	@Summary		GetBlog
-//	@Tags			api
-//	@Description	get blog by id
-//	@Success		200		{integer}	integer	1
-//	@Failure		400,404	{object}	errorResponse
-//	@Failure		500		{object}	errorResponse
-//	@Failure		default	{object}	errorResponse
-//	@Router			/api/blogs [get]
 func GetBlog(c *gin.Context) {
 
 	var comms []models.Comment
@@ -173,4 +163,38 @@ func UpdateBlog(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, blog)
+}
+
+// Blogs example
+//
+//	@Summary		GetBlogs
+//	@Tags			swag
+//	@Description	Get all blogs
+//	@Accept json
+//	@Produce json
+//	@Success		200		{array}		models.Blog
+//	@Failure		400,404	{object}	errorResponse
+//	@Failure		500		{object}	errorResponse
+//	@Failure		default	{object}	errorResponse
+//	@Router			/swag/blogs [get]
+func GetBlogsSwag(c *gin.Context) {
+
+	var blogs []models.Blog
+	// if err := c.ShouldBindJSON(&user); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
+
+	result := models.DB.Find(&blogs)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to register user"})
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"message": "User registered successfully",
+			"Blogs":   blogs,
+		})
 }

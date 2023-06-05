@@ -14,10 +14,6 @@ func ConnectDB() {
 		panic("Не удалось подключиться к базе данных")
 	}
 
-	// if db.Migrator().HasTable(&Category{}) {
-	// 	db.Migrator().DropTable(&Category{})
-	// }
-
 	db.AutoMigrate(&User{}, &Blog{}, &Comment{}, &Category{}, &Tag{}, &Role{})
 
 	DB = db

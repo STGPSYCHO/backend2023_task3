@@ -31,12 +31,6 @@ func CreateComment(c *gin.Context) {
 	}
 	comment.Text = text
 
-	// if err := c.ShouldBindJSON(&comment); err != nil {
-	// 	fmt.Print(comment)
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-
 	result := models.DB.Create(&comment)
 	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error})

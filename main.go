@@ -34,7 +34,7 @@ func main() {
 	store := gormsessions.NewStore(models.DB, true, []byte("secret"))
 	route.Use(sessions.Sessions("mysession", store))
 
-	// CRUD блогов
+	// CRUD блогов для UI
 	api := route.Group("/api", controllers.UserValidation)
 	{
 		api.GET("/blogs/:id", controllers.GetBlog)
@@ -54,9 +54,32 @@ func main() {
 		api.POST("/remove-tag", controllers.RemoveTag)
 	}
 
+	// CRUD блогов для UI
+	swag := route.Group("/swag", controllers.UserValidation)
+	{
+		swag.GET("/blogs/:id", controllers.GetBlog)
+		swag.GET("/blogs", controllers.GetBlogs)
+		swag.POST("/create-blog", controllers.CreateBlog)
+		swag.POST("/remove-blog/:id", controllers.DeleteBlog)
+		swag.PATCH("/blogs/:id", controllers.UpdateBlog)
+
+		swag.POST("/create-category", controllers.CreateCategory)
+		swag.POST("/remove-category/:id", controllers.DeleteCategory)
+		swag.PATCH("/category/:id", controllers.UpdateCategory)
+
+		swag.POST("/create-comment", controllers.CreateComment)
+
+		swag.POST("/tag", controllers.AssosiateTag)
+		swag.POST("/create-tag", controllers.CreateTag)
+		swag.POST("/remove-tag", controllers.RemoveTag)
+	}
+
+	// Авторизация, регистрация Swag
+	route.POST("/login-verify", controllers.LoginSwag)
+	route.POST("/register", controllers.RegisterSwag)
+
 	// Авторизация, регистрация
 	route.GET("/login", controllers.LoginPage)
-	route.POST("/register", controllers.Register)
 	route.POST("/login-verification", controllers.Login)
 
 	// Базовый эндпоинт
@@ -69,3 +92,5 @@ func main() {
 
 	route.Run()
 }
+
+// swag init --parseDependency --parseInternal

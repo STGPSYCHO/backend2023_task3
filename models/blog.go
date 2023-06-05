@@ -5,7 +5,7 @@ import (
 )
 
 type Blog struct {
-	gorm.Model
+	gorm.Model `json:"user"`
 	Title      string `json:"blog_title"`
 	UserID     uint   `json:"user_id" binding:"required"`
 	Content    string `json:"blog_content"`
