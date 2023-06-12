@@ -1,5 +1,12 @@
 basePath: /
 definitions:
+  controllers.Signin:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
   controllers.errorResponse:
     properties:
       message:
@@ -43,23 +50,6 @@ definitions:
     required:
     - user_id
     type: object
-  models.Role:
-    properties:
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      id:
-        type: integer
-      role_name:
-        type: string
-      updatedAt:
-        type: string
-      users:
-        items:
-          $ref: '#/definitions/models.User'
-        type: array
-    type: object
   models.Tag:
     properties:
       blogs:
@@ -75,33 +65,6 @@ definitions:
       tag_name:
         type: string
       updatedAt:
-        type: string
-    type: object
-  models.User:
-    properties:
-      blogs:
-        items:
-          $ref: '#/definitions/models.Blog'
-        type: array
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      first_name:
-        type: string
-      id:
-        type: integer
-      last_name:
-        type: string
-      password:
-        type: string
-      roles:
-        items:
-          $ref: '#/definitions/models.Role'
-        type: array
-      updatedAt:
-        type: string
-      username:
         type: string
     type: object
 host: localhost:8080
@@ -122,7 +85,7 @@ paths:
         name: login
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/controllers.Signin'
       produces:
       - application/json
       responses:
@@ -158,13 +121,7 @@ paths:
         name: login
         required: true
         schema:
-          $ref: '#/definitions/models.User'
-      - description: Password
-        in: body
-        name: password
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/controllers.Signin'
       produces:
       - application/json
       responses:

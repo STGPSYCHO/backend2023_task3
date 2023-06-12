@@ -7,8 +7,6 @@ import (
 	"github.com/STGPSYCHO/backend2023_task3/models"
 	"github.com/gin-contrib/sessions"
 
-	// "golang.org/x/crypto/bcrypt"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,8 +21,7 @@ type Signin struct {
 //		@Description	Register my user
 //		@Accept json
 //		@Produce json
-//	 	@Param 			login body models.User true "Account ID"
-//	 	@Param			password body string true "Password"
+//	 	@Param 			login body Signin true "Account ID"
 //		@Success		200		{string}	string
 //		@Failure		400,404	{object}	errorResponse
 //		@Failure		500		{object}	errorResponse
@@ -89,7 +86,7 @@ func Login(c *gin.Context) {
 //		@Description	Login my user
 //		@Accept json
 //		@Produce json
-//	 	@Param 			login body models.User true "Account ID"
+//	 	@Param 			login body Signin true "Account ID"
 //		@Success		200		{string}	string
 //		@Failure		400,404	{object}	errorResponse
 //		@Failure		500		{object}	errorResponse
@@ -97,16 +94,17 @@ func Login(c *gin.Context) {
 //		@Router			/login-verify [post]
 func LoginSwag(c *gin.Context) {
 
+	var userl Signin
 	var user models.User
 
 	fmt.Print(c.Request.Body)
 
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.ShouldBindJSON(&userl); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	result := models.DB.Where("username = ? and password = ?", user.Username, user.Password).First(&user)
+	result := models.DB.Where("username = ? and password = ?", userl.Login, userl.Password).First(&user)
 	if result.Error != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found or invalid password"})
 		return

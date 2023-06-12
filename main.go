@@ -58,7 +58,7 @@ func main() {
 	swag := route.Group("/swag", controllers.UserValidation)
 	{
 		swag.GET("/blogs/:id", controllers.GetBlog)
-		swag.GET("/blogs", controllers.GetBlogs)
+		swag.GET("/blogs", controllers.GetBlogsSwag)
 		swag.POST("/create-blog", controllers.CreateBlog)
 		swag.POST("/remove-blog/:id", controllers.DeleteBlog)
 		swag.PATCH("/blogs/:id", controllers.UpdateBlog)
